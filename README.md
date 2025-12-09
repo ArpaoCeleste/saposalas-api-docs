@@ -49,8 +49,8 @@ Retorna a disponibilidade das salas e as reservas existentes para uma data.
   ],
   "updated_at": "2023-10-25 14:00:00"
 }
-
-🔮 Segurança e 2FA
+```
+##🔮 Segurança e 2FA
 
 Gere o envio e validação de códigos de segurança via email.
 
