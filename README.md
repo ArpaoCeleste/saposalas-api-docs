@@ -1,7 +1,6 @@
 # ![SAPOSalas](https://img.shields.io/badge/SAPOSalas-API_v1.5.0-8A2BE2?style=for-the-badge&logo=php&logoColor=white)
 
 > **Documentação técnica completa do sistema de reservas.**
-> URL:Website:https://sapossalas.rf.gd/index.php
 > Abrange APIs JSON (AJAX), processamento de formulários (POST) e estrutura de páginas (GET).
 
 ![Status](https://img.shields.io/badge/Status-Operacional-blueviolet?style=flat-square)
@@ -15,7 +14,7 @@
 | Ambiente | URL Base | Descrição |
 | :--- | :--- | :--- |
 | **Produção** | `https://sapossalas.rf.gd` | Servidor InfinityFree |
-| **Local** | `http://localhost/saposalas` | Servidor XAMPP |
+| **Local** | `http://saw.pt/PHP` | Servidor XAMPP |
 
 ---
 
