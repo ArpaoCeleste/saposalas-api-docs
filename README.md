@@ -15,7 +15,8 @@
 | :--- | :--- | :--- |
 | **Produção** | `https://sapossalas.rf.gd` | Servidor InfinityFree |
 | **Local** | `http://saw.pt/PHP` | Servidor XAMPP |
-
+| **Swagger-InfinityFree** | `https://sapossalas.rf.gd/api-docs/#/` | Swagger InfinityFree  |
+| **Swagger-GitHub ** | `https://arpaoceleste.github.io/saposalas-api-docs/` | Swagger GitHub  |
 ---
 
 ## 🟪 1. Backend API (JSON)
