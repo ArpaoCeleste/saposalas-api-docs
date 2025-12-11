@@ -4,7 +4,7 @@ info:
   description: >
     Documentação técnica completa do sistema de reservas SAPOSalas.
     Abrange APIs JSON (AJAX), processamento de formulários (POST) e páginas de visualização (GET).
-  version: 1.6.0
+  version: 1.7.0
   contact:
     name: Equipa SAPOSalas
     email: infosaposalas@gmail.com
@@ -45,8 +45,11 @@ paths:
     post:
       tags:
         - Autenticação
-      summary: Processar Login
-      description: Valida credenciais. Se correto, retorna HTML para o passo 2FA ou redireciona.
+      summary: Processar Login e 2FA
+      description: >
+        Gere dois cenários:
+        1. Login normal (form-urlencoded): Valida email/pass.
+        2. Validação 2FA Google (multipart/form-data): Valida o código TOTP via AJAX.
       requestBody:
         required: true
         content:
@@ -68,9 +71,22 @@ paths:
                   type: string
                 csrf_token:
                   type: string
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum: [verify_google_2fa]
+                  description: Obrigatório para validar o código Google Auth via AJAX.
+                code:
+                  type: string
+                  description: O código de 6 dígitos.
+                csrf_token:
+                  type: string
       responses:
         '200':
-          description: Processado com sucesso.
+          description: HTML (Login normal) ou JSON (Validação 2FA).
 
   /criar-conta.php:
     post:
@@ -163,6 +179,45 @@ paths:
   # ==========================================
   # BACKEND API (JSON RETURNS)
   # ==========================================
+  /backend/api_2fa.php:
+    post:
+      tags:
+        - Backend JSON
+        - Autenticação
+      summary: Gestão 2FA (Google Authenticator)
+      description: API usada no Dashboard para configurar, ativar e desativar o Google Authenticator.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  enum: [generate_secret, verify_and_enable, disable]
+                code:
+                  type: string
+                  description: Obrigatório apenas para 'verify_and_enable'.
+                csrf_token:
+                  type: string
+      responses:
+        '200':
+          description: JSON com sucesso/erro ou dados do QR Code.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  qr_code_url:
+                    type: string
+                  secret:
+                    type: string
+
   /backend/api_occupancy.php:
     get:
       tags:
@@ -176,7 +231,7 @@ paths:
             type: string
             format: date
           required: false
-     responses:
+      responses:
         '200':
           description: JSON com salas e reservas.
           content:
@@ -188,20 +243,8 @@ paths:
                     type: boolean
                   rooms:
                     type: array
-                    items:
-                      type: object
-                      properties:
-                        id: { type: integer }
-                        nome: { type: string }
                   reservations:
                     type: array
-                    items:
-                      type: object
-                      properties:
-                        room_id: { type: integer }
-                        hora_inicio: { type: string }
-                        hora_fim: { type: string }
-                        professor_nome: { type: string }
                   updated_at:
                     type: string
 
@@ -209,8 +252,8 @@ paths:
     post:
       tags:
         - Backend JSON
-      summary: Segurança (2FA / Códigos)
-      description: Envia e valida códigos por email via AJAX.
+      summary: Segurança (Códigos por Email)
+      description: Envia e valida códigos por email via AJAX (usado para Password, Delete e Login antigo).
       requestBody:
         content:
           multipart/form-data:
