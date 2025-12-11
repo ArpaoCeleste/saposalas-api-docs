@@ -252,14 +252,14 @@ Manages the configuration, activation, and deactivation of Google Authenticator.
     Fields: code (required to activate)
 
 Response Example:
-JSON
+```json
 
 {
   "success": true,
   "qr_code_url": "https://api.qrserver.com/v1/create-qr-code/...",
   "secret": "JBSWY3DPEHPK3PXP"
 }
-
+```
 🔮 Get Occupancy (Grid)
 
 Returns room availability and existing reservations for a specific date.
@@ -271,7 +271,7 @@ Returns room availability and existing reservations for a specific date.
     Parameters: data (Y-m-d)
 
 Response Example:
-JSON
+```json
 
 {
   "success": true,
@@ -279,7 +279,7 @@ JSON
   "reservations": [ { "id": 10, "room_id": 1, "start": "09:00", "end": "10:00" } ],
   "updated_at": "2023-10-25 14:00:00"
 }
-
+```
 🔮 Security and Email (Legacy 2FA)
 
 Manages the sending and validation of security codes via email (Legacy Login, Delete Account, Change Password).
@@ -291,14 +291,14 @@ Manages the sending and validation of security codes via email (Legacy Login, De
     Fields: action (send_code, verify_code), context, code, csrf_token
 
 Response Example:
-JSON
+```json
 
 {
   "success": true,
   "message": "Code validated successfully.",
   "action_required": "proceed_login"
 }
-
+```
 🔮 User Management
 
 Profile updates, password changes, and account deletion.
@@ -310,13 +310,13 @@ Profile updates, password changes, and account deletion.
     Actions: update_profile, update_password, execute_delete
 
 Response Example:
-JSON
+```json
 
 {
   "success": true,
   "message": "Profile data updated successfully."
 }
-
+```
 🔮 Room Details (Modal)
 
 Complete data of a room for modal windows.
@@ -328,7 +328,7 @@ Complete data of a room for modal windows.
     Parameter: room_id (Integer)
 
 Response Example:
-JSON
+```json
 
 {
   "success": true,
@@ -338,7 +338,7 @@ JSON
     "galeria": [ "uploads/img1.jpg" ]
   }
 }
-
+```
 🟪 2. Authentication
 
 Endpoints responsible for the session lifecycle.
