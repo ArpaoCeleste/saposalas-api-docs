@@ -4,7 +4,7 @@ info:
   description: >
     Documentação técnica completa do sistema de reservas SAPOSalas.
     Abrange APIs JSON (AJAX), processamento de formulários (POST) e páginas de visualização (GET).
-  version: 1.5.0
+  version: 1.6.0
   contact:
     name: Equipa SAPOSalas
     email: infosaposalas@gmail.com
@@ -20,12 +20,14 @@ tags:
     description: Login, Registo, Recuperação de Password e 2FA.
   - name: Backend JSON
     description: APIs que retornam dados em formato JSON (usadas por JavaScript).
-  - name: Admin
-    description: Gestão de Salas e Backoffice.
+  - name: Admin (Backend)
+    description: Processamento de dados de administração (POST).
   - name: Reservas
     description: Criação, Edição e Cancelamento de reservas.
-  - name: Páginas Públicas
-    description: Navegação do site.
+  - name: Páginas Públicas & Dashboards
+    description: Navegação do site (GET).
+  - name: Sistema
+    description: Scripts de manutenção e verificação.
 
 paths:
   # ==========================================
@@ -35,6 +37,7 @@ paths:
     get:
       tags:
         - Autenticação
+        - Páginas Públicas & Dashboards
       summary: Página de Login
       responses:
         '200':
@@ -256,8 +259,11 @@ paths:
     post:
       tags:
         - Backend JSON
-      summary: Gerir Reservas do Utilizador
-      description: Permite ao utilizador cancelar ou editar as suas reservas.
+        - Reservas
+      summary: Gerir Reservas do Utilizador (Editar/Cancelar)
+      description: >
+        Permite ao utilizador cancelar (muda estado para 'cancelada') ou editar as suas reservas. 
+        Gera LOGs de atividade.
       requestBody:
         content:
           multipart/form-data:
@@ -300,12 +306,12 @@ paths:
           description: JSON Object.
 
   # ==========================================
-  # ADMINISTRAÇÃO E RESERVAS (FORMS)
+  # ADMINISTRAÇÃO E RESERVAS (FORMS POST)
   # ==========================================
   /backend/manage_rooms.php:
     post:
       tags:
-        - Admin
+        - Admin (Backend)
       summary: CRUD Salas
       description: Cria, edita ou elimina salas (Admin apenas).
       requestBody:
@@ -343,12 +349,39 @@ paths:
         '302':
           description: Redireciona para admin.php.
 
+  /backend/manage_users.php:
+    post:
+      tags:
+        - Admin (Backend)
+      summary: Gestão de Utilizadores (Reativar)
+      description: Permite ao administrador reativar contas desativadas.
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, id]
+              properties:
+                action:
+                  type: string
+                  enum: [reativar]
+                id:
+                  type: integer
+                section:
+                  type: string
+                  default: 'utilizadores'
+      responses:
+        '302':
+          description: Redireciona para admin.php com mensagem SweetAlert.
+
   /backend/processar_reserva.php:
     post:
       tags:
         - Reservas
       summary: Submeter Nova Reserva
-      description: Valida e insere uma nova reserva na BD.
+      description: >
+        Valida conflitos, insere nova reserva na BD, envia email de confirmação e gera LOG.
+        Estado inicial da reserva é 'ativa'.
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -374,12 +407,27 @@ paths:
           description: Redireciona para detalhes.php com sucesso ou erro.
 
   # ==========================================
-  # PÁGINAS PÚBLICAS (GET)
+  # SISTEMA E MANUTENÇÃO
+  # ==========================================
+  /backend/verificar_conclusao.php:
+    get:
+      tags:
+        - Sistema
+      summary: Atualizar Estado de Reservas Passadas
+      description: >
+        Script incluído no início das páginas principais. 
+        Atualiza reservas 'ativas' passadas para 'concluida'.
+      responses:
+        '200':
+          description: Execução interna (sem output direto).
+
+  # ==========================================
+  # PÁGINAS PÚBLICAS & DASHBOARDS (GET)
   # ==========================================
   /index.php:
     get:
       tags:
-        - Páginas Públicas
+        - Páginas Públicas & Dashboards
       summary: Homepage
       responses:
         '200':
@@ -388,7 +436,7 @@ paths:
   /reservar.php:
     get:
       tags:
-        - Páginas Públicas
+        - Páginas Públicas & Dashboards
       summary: Pesquisa de Salas
       parameters:
         - in: query
@@ -406,7 +454,7 @@ paths:
   /detalhes.php:
     get:
       tags:
-        - Páginas Públicas
+        - Páginas Públicas & Dashboards
       summary: Página de Detalhes da Sala
       parameters:
         - in: query
@@ -421,23 +469,44 @@ paths:
   /admin.php:
     get:
       tags:
-        - Admin
-      summary: Painel de Administração / Dashboard
-      description: Acesso restrito. Mostra gestão de salas, utilizadores e ocupação.
+        - Páginas Públicas & Dashboards
+      summary: Painel de Administração
+      description: Acesso restrito (Admin). Gestão de salas, utilizadores (ativos/inativos) e ocupação.
       parameters:
         - in: query
           name: section
           schema:
             type: string
             enum: [dashboard, salas, utilizadores, ocupacao, definicoes]
+        - in: query
+          name: professor
+          schema:
+            type: integer
+            description: Filtro de ID de professor.
       responses:
         '200':
-          description: HTML do Dashboard.
+          description: HTML do Dashboard Admin.
+
+  /perfil.php:
+    get:
+      tags:
+        - Páginas Públicas & Dashboards
+      summary: Perfil do Utilizador
+      description: Dashboard do utilizador comum. Histórico de reservas e definições.
+      parameters:
+        - in: query
+          name: goto
+          schema:
+            type: string
+            enum: [reservas, definicoes]
+      responses:
+        '200':
+          description: HTML do Dashboard User.
 
   /pagina_sobrenos.php:
     get:
       tags:
-        - Páginas Públicas
+        - Páginas Públicas & Dashboards
       summary: Sobre Nós
       responses:
         '200':
@@ -446,7 +515,7 @@ paths:
   /politica_de_privacidade.php:
     get:
       tags:
-        - Páginas Públicas
+        - Páginas Públicas & Dashboards
       summary: Política de Privacidade
       responses:
         '200':
@@ -455,7 +524,7 @@ paths:
   /politica_de_cookies.php:
     get:
       tags:
-        - Páginas Públicas
+        - Páginas Públicas & Dashboards
       summary: Política de Cookies
       responses:
         '200':
@@ -464,7 +533,7 @@ paths:
   /termos_de_utilizador.php:
     get:
       tags:
-        - Páginas Públicas
+        - Páginas Públicas & Dashboards
       summary: Termos e Condições
       responses:
         '200':
