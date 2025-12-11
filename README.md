@@ -229,34 +229,45 @@ Para suporte técnico ou dúvidas sobre a integração:
 
 
 
+# ![SAPOSalas](https://img.shields.io/badge/SAPOSalas-API_v1.7.0-8A2BE2?style=for-the-badge&logo=php&logoColor=white)
 
-    🟣 Servers and Environments
-Environment	Base URL	Description
-Production	https://sapossalas.rf.gd	InfinityFree Server
-Local	http://saw.pt/PHP	XAMPP Server
-Swagger-InfinityFree	https://sapossalas.rf.gd/api-docs/#/	Swagger InfinityFree
-Swagger-GitHub	https://arpaoceleste.github.io/saposalas-api-docs/	Swagger GitHub
-🟪 1. Backend API (JSON)
+> **Complete technical documentation of the reservation system.**
+> Covers JSON APIs (AJAX), form processing (POST), and page structure (GET).
+
+![Status](https://img.shields.io/badge/Status-Operational-blueviolet?style=flat-square)
+![Tech](https://img.shields.io/badge/Backend-PHP-9370DB?style=flat-square)
+![Data](https://img.shields.io/badge/Data-JSON-mediumpurple?style=flat-square)
+
+---
+
+## 🟣 Servers and Environments
+
+| Environment | Base URL | Description |
+| :--- | :--- | :--- |
+| **Production** | `https://sapossalas.rf.gd` | InfinityFree Server |
+| **Local** | `http://saw.pt/PHP` | XAMPP Server |
+| **Swagger-InfinityFree** | `https://sapossalas.rf.gd/api-docs/#/` | Swagger InfinityFree |
+| **Swagger-GitHub** | `https://arpaoceleste.github.io/saposalas-api-docs/` | Swagger GitHub |
+
+---
+
+## 🟪 1. Backend API (JSON)
 
 These endpoints return structured data for asynchronous operations (JavaScript/AJAX).
-🔮 2FA Management (Google Auth) - NEW
 
+### 🔮 2FA Management (Google Auth) - **NEW**
 Manages the configuration, activation, and deactivation of Google Authenticator.
 
-    Endpoint: /backend/api_2fa.php
+* **Endpoint:** `/backend/api_2fa.php`
+* **Method:** `POST`
+* **Actions:** `generate_secret`, `verify_and_enable`, `disable`
+* **Fields:** `code` (required to activate)
 
-    Method: POST
-
-    Actions: generate_secret, verify_and_enable, disable
-
-    Fields: code (required to activate)
-
-Response Example:
+**Response Example:**
 ```json
-
 {
   "success": true,
-  "qr_code_url": "https://api.qrserver.com/v1/create-qr-code/...",
+  "qr_code_url": "[https://api.qrserver.com/v1/create-qr-code/](https://api.qrserver.com/v1/create-qr-code/)...",
   "secret": "JBSWY3DPEHPK3PXP"
 }
 ```
@@ -343,13 +354,13 @@ Response Example:
 
 Endpoints responsible for the session lifecycle.
 Endpoint	Method	Description
-
 ```text
 /login.php	POST	Hybrid: Validates credentials (Form) OR validates Google Auth code (JSON via verify_google_2fa).
 /criar-conta.php	POST	Creates inactive account and sends confirmation email.
 /confirmar-conta.php	GET	Activates the account via email token.
 /repor-password.php	POST	Handles password reset request and definition.
 /logout.php	GET	Destroys the session and redirects.
+
 ```
 
 🟪 3. Administration and Reservations (Forms)
@@ -368,12 +379,13 @@ Exclusive to administrators.
     Note: Supports multiple image uploads to gallery.
 
 Payload Example (Multipart/Form-data):
-Plaintext
+```plaintext
 
 action: adicionar
 nome: Training Room
 galeria[]: (binary file)
 csrf_token: a1b2c3d4...
+```
 
 🔮 Process Reservation
 
@@ -386,7 +398,8 @@ Submission of a new reservation.
     Fields: room_id, data, hora_inicio (start_time), hora_fim (end_time), descricao (description)
 
 Payload Example (Form Data):
-Plaintext
+
+```plaintext
 
 room_id: 3
 data: 2025-12-12
@@ -394,7 +407,7 @@ hora_inicio: 09:00
 hora_fim: 11:00
 descricao: General Meeting
 csrf_token: xyz789...
-
+```
 🔮 Manage User Reservations
 
 Cancellation or editing by the user themselves.
@@ -406,13 +419,15 @@ Cancellation or editing by the user themselves.
     Actions: cancel, edit
 
 Payload Example (Form Data):
-Plaintext
+
+```plaintext
 
 action: edit
 id: 45
 data: 2025-12-15
 descricao: Time change
 csrf_token: wxyz123...
+```
 
 🟪 4. Page Structure (GET)
 
