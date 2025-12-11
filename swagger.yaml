@@ -176,7 +176,7 @@ paths:
             type: string
             format: date
           required: false
-      responses:
+     responses:
         '200':
           description: JSON com salas e reservas.
           content:
@@ -188,8 +188,20 @@ paths:
                     type: boolean
                   rooms:
                     type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        nome: { type: string }
                   reservations:
                     type: array
+                    items:
+                      type: object
+                      properties:
+                        room_id: { type: integer }
+                        hora_inicio: { type: string }
+                        hora_fim: { type: string }
+                        professor_nome: { type: string }
                   updated_at:
                     type: string
 
