@@ -123,12 +123,17 @@ Exemplo de Resposta:
 
 Endpoints responsáveis pelo ciclo de vida da sessão.
 Endpoint	Método	Descrição
+```text
 /login.php	POST	Híbrido: Valida credenciais (Formulário) OU valida código Google Auth (JSON via verify_google_2fa).
-/criar-conta.php	POST	Cria conta inativa e envia email de confirmação.
-/confirmar-conta.php	GET	Ativa a conta via token de email.
-/repor-password.php	POST	Gere o pedido e definição de nova palavra-passe.
-/logout.php	GET	Destrói a sessão e redireciona.
 
+/criar-conta.php	POST	Cria conta inativa e envia email de confirmação.
+
+/confirmar-conta.php	GET	Ativa a conta via token de email.
+
+/repor-password.php	POST	Gere o pedido e definição de nova palavra-passe.
+
+/logout.php	GET	Destrói a sessão e redireciona.
+```
 🟪 3. Administração e Reservas (Formulários)
 
 Processamento de formulários HTML e redirecionamentos (302).
