@@ -1,3 +1,9 @@
+PT
+
+
+--The English version can be found below this section--
+
+
 # ![SAPOSalas](https://img.shields.io/badge/SAPOSalas-API_v1.7.0-8A2BE2?style=for-the-badge&logo=php&logoColor=white)
 
 > **Documentação técnica completa do sistema de reservas.**
